@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectLookupService {
@@ -14,7 +16,7 @@ public class ProjectLookupService {
     private final ProjectRepository projectRepository;
 
     public Project findOr404(Long id) {
-        return projectRepository.findById(id)
+        return projectRepository.findById(Objects.requireNonNull(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proje bulunamadi"));
     }
 }

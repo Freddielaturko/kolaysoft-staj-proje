@@ -24,7 +24,7 @@ docs/       Analiz dokümanı, test senaryoları, teknik karar notları
 ## Kurulum ve Çalıştırma
 
 ### Ön Koşullar
-- Java 17+
+- Java 25+ (LTS)
 - Maven 3.9+
 - Node.js 18+
 - PostgreSQL 14+ (yerel veya Docker)

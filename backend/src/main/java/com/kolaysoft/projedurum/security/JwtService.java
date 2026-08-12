@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
+// jjwt'nin Claims arayuzu null-annotation icermiyor; Eclipse'in fonksiyonel
+// arayuz null analizi bu yuzden zararsiz bir uyari veriyor, gercek bir null riski yok.
+@SuppressWarnings("null")
 @Service
 public class JwtService {
 
@@ -39,7 +42,7 @@ public class JwtService {
     }
 
     public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.getSubject());
     }
 
     public boolean isTokenValid(String token, UserPrincipal userPrincipal) {
@@ -48,7 +51,7 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return extractClaim(token, claims -> claims.getExpiration()).before(new Date());
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> resolver) {

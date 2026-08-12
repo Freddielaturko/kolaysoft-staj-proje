@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class ProjectController {
     @PostMapping("/api/admin/projects")
     @ResponseStatus(HttpStatus.CREATED)
     public ProjectResponse createProject(@Valid @RequestBody ProjectRequest request) {
-        User pm = userRepository.findById(request.sorumluPmId())
+        User pm = userRepository.findById(Objects.requireNonNull(request.sorumluPmId()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sorumlu PM bulunamadi"));
 
         if (pm.getRol() != Role.PM) {

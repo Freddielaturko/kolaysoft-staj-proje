@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class TaskItemController {
         Project project = projectLookupService.findOr404(projectId);
         accessGuard.ensureCanWrite(principal, project);
 
-        TaskItem task = taskItemRepository.findById(taskId)
+        TaskItem task = taskItemRepository.findById(Objects.requireNonNull(taskId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Is kalemi bulunamadi"));
 
         if (!task.getProject().getId().equals(projectId)) {
