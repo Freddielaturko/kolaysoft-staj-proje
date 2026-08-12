@@ -22,6 +22,10 @@ app:
   jwt:
     secret: ${JWT_SECRET:CHANGE_ME_LOCAL_DEV_SECRET_MIN_32_CHARS_LONG}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  admin:
+    email: ${APP_ADMIN_EMAIL:admin@kolaysoft.com.tr}
+    password: ${APP_ADMIN_PASSWORD:ChangeMe123!}
+    ad-soyad: ${APP_ADMIN_AD_SOYAD:Sistem Admin}
 
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}

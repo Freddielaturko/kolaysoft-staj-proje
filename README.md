@@ -48,12 +48,25 @@ npm run dev
 
 Uygulama `http://localhost:5173` üzerinden erişilebilir.
 
+## Kimlik Doğrulama (Auth)
+
+Sistemde herkese açık kayıt (register) yoktur; kullanıcılar yalnızca Admin tarafından oluşturulur.
+
+- **İlk admin:** Uygulama ilk kez ayağa kalktığında, `users` tablosu boşsa `.env`'deki
+  `APP_ADMIN_EMAIL` / `APP_ADMIN_PASSWORD` bilgileriyle otomatik bir admin kullanıcı oluşturulur.
+  **İlk girişten sonra bu şifreyi değiştirin.**
+- `POST /api/auth/login` — email + şifre ile giriş, JWT token döner (herkese açık).
+- `POST /api/admin/users` — yeni kullanıcı oluşturma (yalnızca ADMIN, `Authorization: Bearer <token>` gerekir).
+- `GET /api/admin/users` — kullanıcı listesi (yalnızca ADMIN).
+- Diğer tüm `/api/**` endpoint'leri geçerli bir JWT token gerektirir.
+
 ## Durum
 
 🚧 Geliştirme aşamasında (MVP — 1-20. gün planı).
 
 ## Bilinen Eksikler
 
-- Auth/JWT güvenlik katmanı henüz eklenmedi
-- API endpoint'leri henüz eklenmedi
-- Frontend sayfaları henüz eklenmedi
+- Proje / Haftalık Rapor / İş Kalemi CRUD endpoint'leri henüz eklenmedi
+- CTO dashboard endpoint'i henüz eklenmedi
+- Frontend sayfaları (login, dashboard'lar) henüz eklenmedi
+- Testler henüz eklenmedi
