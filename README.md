@@ -1,9 +1,12 @@
 # Haftalık Proje Durum Raporlama ve CTO Takip Sistemi
 
-Kolaysoft staj final projesi. Kolaysoft'taki manuel PowerPoint tabanlı haftalık
-proje raporlama sürecini dijitalleştiren full-stack sistem.
+Kolaysoft staj final projem. Kolaysoft'ta proje durumları şu anda manuel olarak
+PowerPoint üzerinden raporlanıyor; bu proje o süreci dijitalleştiriyor. Proje
+yöneticileri haftalık ilerlemelerini sisteme giriyor, CTO tüm projeleri tek
+ekrandan filtreleyerek takip edebiliyor.
 
-Detaylı analiz için: [`docs/analiz-dokumani.md`](docs/analiz-dokumani.md)
+- Analiz dokümanı: [`docs/analiz-dokumani.md`](docs/analiz-dokumani.md)
+- Test senaryoları: [`docs/test-senaryolari.md`](docs/test-senaryolari.md)
 
 ## Teknoloji Yığını
 
@@ -15,7 +18,7 @@ Detaylı analiz için: [`docs/analiz-dokumani.md`](docs/analiz-dokumani.md)
 ```
 backend/    Spring Boot API
 frontend/   React SPA
-docs/       Analiz dokümanı ve teknik karar notları
+docs/       Analiz dokümanı, test senaryoları, teknik karar notları
 ```
 
 ## Kurulum ve Çalıştırma
@@ -35,7 +38,7 @@ cp .env.example .env   # değerleri kendi ortamına göre düzenle
 mvn spring-boot:run
 ```
 
-API varsayılan olarak `http://localhost:8080` üzerinde ayağa kalkar.
+API `http://localhost:8080` üzerinde ayağa kalkar.
 
 ### Frontend
 
@@ -48,25 +51,36 @@ npm run dev
 
 Uygulama `http://localhost:5173` üzerinden erişilebilir.
 
-## Kimlik Doğrulama (Auth)
+## Kimlik Doğrulama
 
-Sistemde herkese açık kayıt (register) yoktur; kullanıcılar yalnızca Admin tarafından oluşturulur.
+Herkese açık kayıt yok; kullanıcıları yalnızca Admin oluşturur.
 
-- **İlk admin:** Uygulama ilk kez ayağa kalktığında, `users` tablosu boşsa `.env`'deki
-  `APP_ADMIN_EMAIL` / `APP_ADMIN_PASSWORD` bilgileriyle otomatik bir admin kullanıcı oluşturulur.
-  **İlk girişten sonra bu şifreyi değiştirin.**
-- `POST /api/auth/login` — email + şifre ile giriş, JWT token döner (herkese açık).
-- `POST /api/admin/users` — yeni kullanıcı oluşturma (yalnızca ADMIN, `Authorization: Bearer <token>` gerekir).
-- `GET /api/admin/users` — kullanıcı listesi (yalnızca ADMIN).
-- Diğer tüm `/api/**` endpoint'leri geçerli bir JWT token gerektirir.
+- İlk admin: uygulama ilk kez ayağa kalktığında `users` tablosu boşsa,
+  `.env`'deki `APP_ADMIN_EMAIL` / `APP_ADMIN_PASSWORD` ile otomatik oluşturulur.
+  İlk girişten sonra bu şifre değiştirilmeli.
+- `POST /api/auth/login` — email + şifre ile giriş, JWT döner.
+- `POST /api/admin/users` — yeni kullanıcı oluşturma (ADMIN).
+- `GET /api/admin/users` — kullanıcı listesi (ADMIN).
+- Diğer tüm `/api/**` endpoint'leri geçerli bir JWT gerektirir.
+
+## API Uç Noktaları
+
+- `POST /api/admin/projects` — proje oluşturma, sorumlu PM ataması (ADMIN)
+- `GET /api/projects` — PM kendi projelerini, CTO/Admin tüm projeleri görür
+- `GET /api/projects/{id}` — proje detayı (PM yalnızca kendi projesi)
+- `POST /api/projects/{id}/weekly-reports` — haftalık rapor oluşturma/güncelleme (PM; aynı proje+hafta güncelleme sayılır)
+- `GET /api/projects/{id}/weekly-reports` — projenin geçmiş raporları
+- `GET /api/dashboard/cto` — her projenin son durumu, `projectId` / `raporHaftasi` / `genelDurum` / `riskSeviyesi` ile filtrelenebilir (CTO)
+- `POST /api/projects/{id}/tasks`, `PUT .../tasks/{taskId}`, `GET .../tasks` — iş kalemi yönetimi (PM)
+
+Yetki kuralı: CTO yazma işlemi yapamaz, PM yalnızca sorumlusu olduğu projeye yazabilir.
 
 ## Durum
 
-🚧 Geliştirme aşamasında (MVP — 1-20. gün planı).
+Geliştirme aşamasında — MVP (1-20. gün planı) üzerinde çalışıyorum.
 
 ## Bilinen Eksikler
 
-- Proje / Haftalık Rapor / İş Kalemi CRUD endpoint'leri henüz eklenmedi
-- CTO dashboard endpoint'i henüz eklenmedi
-- Frontend sayfaları (login, dashboard'lar) henüz eklenmedi
-- Testler henüz eklenmedi
+- Frontend sayfaları (login, dashboard'lar, formlar) henüz yok
+- Otomatik testler henüz yok, manuel test akışı `docs/test-senaryolari.md`'de
+- CTO dashboard'a ek metrikler (görev sayacı vb.) eklenebilir
