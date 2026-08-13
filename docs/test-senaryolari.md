@@ -1,11 +1,7 @@
 # Test Senaryoları ve Kanıtları
 
-Backend API'sinin manuel test akışı ve beklenen sonuçlar. Test yaptıkça
-sonuçları en alttaki tabloya (tarih, sonuç, varsa hata + düzeltme sonrası
-tekrar test) işliyorum.
-
-Komutlar PowerShell (`Invoke-RestMethod`) içindir. Postman/Insomnia kullanmak
-istersen aynı adımları GUI üzerinden birebir uygulayabilirsin.
+Backend API'sini PowerShell üzerinden manuel test ettim.
+Aşağıda her senaryonun komutları, beklenen sonuç ve gerçek sonuç yer alıyor.
 
 ## Ön Koşul
 
@@ -24,7 +20,12 @@ $adminLogin = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Met
 $adminLogin
 ```
 
-**Beklenen:** `token`, `userId`, `rol: "ADMIN"` alanlarını içeren bir JSON döner. `$adminToken = $adminLogin.token` ile sakla.
+**Beklenen:** `token`, `userId`, `rol: "ADMIN"` alanlarını içeren bir JSON.
+
+**Sonuç:** ✅ Başarılı. Login `200 OK` döndü, `token`/`userId`/`rol: ADMIN` doğru geldi.
+
+Bu senaryoyu ilk kez çalıştırana kadar backend'i ayağa kaldırma sürecinde beş
+farklı hatayla karşılaştım, hepsini çözdüm (detaylar aşağıdaki tabloda).
 
 ---
 
@@ -43,9 +44,11 @@ $pm
 $cto
 ```
 
-**Beklenen:** İki kullanıcı da `201 Created` ile döner, `id` alanları not edilir (bir sonraki adımda `sorumluPmId` için gerekecek).
+**Beklenen:** İki kullanıcı da `201 Created` ile döner.
 
-**Negatif test:** Aynı email ile tekrar `POST /api/admin/users` çağır → `409 Conflict`, "Bu email ile kayitli bir kullanici zaten var" beklenir.
+**Sonuç:** ✅ Başarılı. PM ve CTO kullanıcıları doğru rollerle oluşturuldu (`id 2` ve `id 3`).
+
+**Negatif test (henüz koşulmadı):** Aynı email ile ikinci kez `POST /api/admin/users` çağrıldığında `409 Conflict` dönmesi bekleniyor.
 
 ---
 
@@ -57,9 +60,11 @@ $project = Invoke-RestMethod -Uri "http://localhost:8080/api/admin/projects" -Me
 $project
 ```
 
-**Beklenen:** `201 Created`, `sorumluPmAdSoyad: "Ayşe PM"` dönmeli.
+**Beklenen:** `201 Created`, `sorumluPmAdSoyad: "Ayşe PM"`.
 
-**Negatif test:** `sorumluPmId` olarak CTO'nun id'sini gönder → `400 Bad Request`, "Secilen kullanici PM rolunde degil" beklenir.
+**Sonuç:** ✅ Başarılı. Proje oluşturuldu, `sorumluPmAdSoyad: "Ayse PM"` doğru döndü.
+
+**Negatif test (henüz koşulmadı):** `sorumluPmId` olarak CTO'nun id'si gönderildiğinde `400 Bad Request` dönmesi bekleniyor.
 
 ---
 
@@ -89,16 +94,21 @@ $report
 
 **Beklenen:** `200 OK`, rapor bilgileri geri döner.
 
-**Upsert testi:** Aynı `raporHaftasi` (`2026-08-10`) ile farklı bir `gerceklesenIlerleme` (örn. 50) göndererek isteği tekrar at. **Beklenen:** yeni bir kayıt oluşmaz, mevcut rapor güncellenir (`GET /api/projects/{id}/weekly-reports` ile listelendiğinde tek kayıt olmalı).
+**Sonuç:** ✅ Başarılı. Rapor oluşturuldu, tüm alanlar doğru geldi.
 
-**Negatif test:** `hedeflenenIlerleme` alanını `150` gönder → `400 Bad Request`, "Hedeflenen ilerleme 0-100 arasinda olmalidir" beklenir.
+**Upsert testi:** Aynı `raporHaftasi` (`2026-08-10`) için `gerceklesenIlerleme`yi `50`'ye değiştirip isteği tekrar gönderdim.
+
+**Sonuç:** ✅ Başarılı. `id` değişmedi (`1` kaldı), `gerceklesenIlerleme` `50`'ye güncellendi, `GET /api/projects/{id}/weekly-reports` ile listelendiğinde toplam kayıt sayısı `1` çıktı (2 olmadı) — upsert mantığı doğrulandı.
+
+**Negatif test:** `hedeflenenIlerleme` alanına `150` gönderdim.
+
+**Sonuç:** ✅ Başarılı. `400 Bad Request` döndü.
 
 ---
 
 ## Senaryo 5 — Yetkilendirme sınırları
 
 ```powershell
-# CTO, rapor girmeye calisirsa (yazma) 403 donmeli
 $ctoLoginBody = @{ email = "can.cto@kolaysoft.com.tr"; sifre = "Sifre123!" } | ConvertTo-Json
 $ctoLogin = Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" -Method Post -Body $ctoLoginBody -ContentType "application/json"
 $ctoHeaders = @{ Authorization = "Bearer $($ctoLogin.token)" }
@@ -110,12 +120,14 @@ try {
 }
 ```
 
-**Beklenen:** `403 Forbidden`.
+**Beklenen:** `403 Forbidden` (CTO yazma yapamamalı).
 
-**Diğer negatif testler:**
-- Token olmadan `GET /api/projects` çağır → `401 Unauthorized`
-- Yanlış şifreyle login → `401 Unauthorized`, "Email veya sifre hatali"
-- Başka bir PM oluşturup onun token'ıyla bu projeye yazmayı dene → `403 Forbidden`, "Bu projeye yazma yetkiniz yok"
+**Sonuç:** ✅ Başarılı. `403 Forbidden` döndü.
+
+**Diğer negatif testler (henüz koşulmadı):**
+- Token olmadan `GET /api/projects` çağrıldığında `401 Unauthorized` dönmesi bekleniyor
+- Yanlış şifreyle login denendiğinde `401 Unauthorized` dönmesi bekleniyor
+- Başka bir PM'in token'ıyla bu projeye yazma denendiğinde `403 Forbidden` dönmesi bekleniyor
 
 ---
 
@@ -125,14 +137,19 @@ try {
 $dashboard = Invoke-RestMethod -Uri "http://localhost:8080/api/dashboard/cto" -Method Get -Headers $ctoHeaders
 $dashboard
 
-# Filtreli sorgu
-$filtered = Invoke-RestMethod -Uri "http://localhost:8080/api/dashboard/cto?riskSeviyesi=ORTA" -Method Get -Headers $ctoHeaders
+$filtered = Invoke-RestMethod -Uri "http://localhost:8080/api/dashboard/cto?riskSeviyesi=DUSUK" -Method Get -Headers $ctoHeaders
 $filtered
+
+try {
+    Invoke-RestMethod -Uri "http://localhost:8080/api/dashboard/cto" -Method Get -Headers $pmHeaders
+} catch {
+    $_.Exception.Response.StatusCode
+}
 ```
 
-**Beklenen:** Tüm projelerin en son raporu listelenir; `riskSeviyesi=ORTA` filtresiyle yalnızca o risk seviyesindeki raporlar döner.
+**Beklenen:** Tüm projelerin en son raporu listelenir; `riskSeviyesi` filtresi doğru eşleşir; PM bu endpoint'e erişemez.
 
-**Negatif test:** Bu endpoint'i PM token'ıyla çağır → `403 Forbidden` beklenir (`@PreAuthorize("hasRole('CTO')")`).
+**Sonuç:** ✅ Başarılı. Dashboard doğru veriyi döndürdü, `riskSeviyesi=DUSUK` filtresi tek kayıtla doğru eşleşti, PM'in dashboard'a erişim denemesi `403 Forbidden` ile engellendi.
 
 ---
 
@@ -143,25 +160,34 @@ $taskBody = @{ baslik = "PDF export arastirmasi"; durum = "DEVAM_EDIYOR"; soruml
 $task = Invoke-RestMethod -Uri "http://localhost:8080/api/projects/$($project.id)/tasks" -Method Post -Body $taskBody -ContentType "application/json" -Headers $pmHeaders
 $task
 
-# Durum guncelleme
 $updateBody = @{ baslik = "PDF export arastirmasi"; durum = "TAMAMLANDI"; sorumlu = "Ayşe PM" } | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:8080/api/projects/$($project.id)/tasks/$($task.id)" -Method Put -Body $updateBody -ContentType "application/json" -Headers $pmHeaders
+$updatedTask = Invoke-RestMethod -Uri "http://localhost:8080/api/projects/$($project.id)/tasks/$($task.id)" -Method Put -Body $updateBody -ContentType "application/json" -Headers $pmHeaders
+$updatedTask.durum
 ```
 
-**Beklenen:** Task oluşturulur (`201`), sonra durumu `TAMAMLANDI` olarak güncellenir (`200`).
+**Beklenen:** Task oluşturulur (`201`), sonra durumu `TAMAMLANDI` olarak güncellenir.
+
+**Sonuç:** ✅ Başarılı. Task oluşturuldu, `PUT` ile durum `DEVAM_EDIYOR` → `TAMAMLANDI` olarak güncellendi.
 
 ---
 
 ## Test Sonuçları Kaydı
 
-Aşağıdaki tabloyu her test turunda güncelle (yönetmelik madde 1.1 "test kanıtı" gereği):
+| Tarih | Senaryo | Sonuç | Not / Bulunan Hata |
+|---|---|---|---|
+| 2026-08-13 | Senaryo 1 — İlk admin ile giriş | ✅ Başarılı | Backend'i ilk kez ayağa kaldırma sürecinde şu hatalarla karşılaştım ve çözdüm: (1) Lombok, JDK 25 ile annotation processing yapamıyordu → Lombok 1.18.42'ye sabitledim. (2) Spring Security 7'de `DaoAuthenticationProvider`'ın no-arg constructor'ı kaldırılmış → constructor'a `UserDetailsService` verdim. (3) `OncePerRequestFilter`'daki `@NonNull` annotation'ları Spring Framework 7 ile çakışıyordu → kaldırdım. (4) `TaskItem` entity'sindeki `not` alanı PostgreSQL'in ayrılmış kelimesiyle çakışıp tablo oluşturmayı bozuyordu → sütun adını `notlar` yaptım. (5) PostgreSQL kurulumu Türkçe Windows locale hatası verdi → kurulumda `C` locale seçerek çözdüm. |
+| 2026-08-13 | Senaryo 2 — Admin, PM ve CTO oluşturur | ✅ Başarılı | İki kullanıcı da `201 Created` ile oluştu, doğru rollerle döndü. |
+| 2026-08-13 | Senaryo 3 — Admin, PM'e proje atar | ✅ Başarılı | Proje oluşturuldu, `sorumluPmAdSoyad` doğru döndü. |
+| 2026-08-13 | Senaryo 4 — PM haftalık rapor girer + upsert | ✅ Başarılı | Upsert mantığı doğrulandı (aynı proje+hafta ikinci kez gönderildiğinde günceller, yeni kayıt açmaz). Negatif validasyon testi (`hedeflenenIlerleme=150`) `400` ile doğru sonuç verdi. |
+| 2026-08-13 | Senaryo 5 — Yetkilendirme sınırları | ✅ Başarılı | CTO'nun rapor yazma girişimi `403 Forbidden` ile engellendi. |
+| 2026-08-13 | Senaryo 6 — CTO dashboard + filtreleme | ✅ Başarılı | Dashboard doğru veriyi döndürdü, filtre doğru eşleşti, PM'in dashboard'a erişim denemesi `403 Forbidden` ile engellendi. |
+| 2026-08-13 | Senaryo 7 — İş kalemi (task) akışı | ✅ Başarılı | Task oluşturuldu ve durumu başarıyla güncellendi. |
 
-| Tarih | Senaryo | Sonuç | Not / Bulunan Hata | Düzeltme Sonrası Tekrar Test |
-|---|---|---|---|---|
-| 2026-08-13 | Senaryo 1 — İlk admin ile giriş | ✅ Başarılı | Backend'i ilk kez ayağa kaldırma sürecinde şu hatalarla karşılaşıldı ve düzeltildi: (1) Lombok, JDK 25 ile annotation processing yapamıyordu → Lombok 1.18.42'ye sabitlendi. (2) Spring Security 7'de `DaoAuthenticationProvider`'ın no-arg constructor'ı kaldırılmış → constructor'a `UserDetailsService` verildi. (3) `OncePerRequestFilter`'daki `@NonNull` annotation'ları Spring Framework 7 ile çakışıyordu → kaldırıldı. (4) `TaskItem` entity'sindeki `not` alanı PostgreSQL'in ayrılmış kelimesiyle çakışıp tablo oluşturmayı bozuyordu → sütun adı `notlar` olarak değiştirildi. (5) PostgreSQL kurulumu Türkçe Windows locale hatası verdi → kurulumda `C` locale seçilerek çözüldü. | Login `200 OK` döndü, `token`/`userId`/`rol: ADMIN` doğru geldi. Tekrar teste gerek kalmadı, ilk denemede başarılı. |
-| _(doldurulacak)_ | | | | |
+**Özet:** 7/7 senaryo başarılı. Backend MVP'nin çekirdek akışlarını (auth, rol bazlı yetkilendirme, proje/rapor/task CRUD, upsert, CTO dashboard filtreleme) uçtan uca doğruladım.
 
 ## Bilinen Riskler / Kalan Test Eksikleri
 
-- Otomatik (JUnit) testler henüz yazılmadı, yukarıdaki akış manuel yürütülüyor
-- Eşzamanlı (concurrent) upsert senaryosu (iki PM aynı anda aynı rapora yazarsa) test edilmedi
+- Otomatik (JUnit) testler henüz yazmadım, yukarıdaki 7 senaryoyu manuel yürüttüm
+- Eşzamanlı (concurrent) upsert senaryosunu (iki PM aynı anda aynı rapora yazarsa) henüz test etmedim
+- Task listeleme ve proje listeleme (PM'in yalnızca kendi projelerini görmesi) için ayrı bir PM ile çapraz erişim denemesini henüz koşmadım
+- Şifre doğrulama (min 6 karakter), yanlış email/şifre ile login (`401`), token olmadan istek (`401`) senaryolarını henüz koşmadım
