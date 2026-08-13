@@ -1,0 +1,57 @@
+.app-layout {
+  min-height: 100vh;
+  background: #F9FAFB;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: #0F3D2E;
+  color: white;
+}
+
+.app-header-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.app-header-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.app-header-role {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: #10B981;
+  color: #0F3D2E;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.app-header-user button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: transparent;
+  color: white;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.app-header-user button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.app-main {
+  padding: 2rem;
+}
