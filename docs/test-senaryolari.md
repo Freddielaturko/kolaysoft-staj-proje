@@ -2,10 +2,10 @@
 
 Backend API'sinin manuel test akışı ve beklenen sonuçlar. Test yaptıkça
 sonuçları en alttaki tabloya (tarih, sonuç, varsa hata + düzeltme sonrası
-tekrar test) işliyorum. 
+tekrar test) işliyorum.
 
-Komutlar PowerShell (`Invoke-RestMethod`) içindir. 
-
+Komutlar PowerShell (`Invoke-RestMethod`) içindir. Postman/Insomnia kullanmak
+istersen aynı adımları GUI üzerinden birebir uygulayabilirsin.
 
 ## Ön Koşul
 
@@ -158,6 +158,7 @@ Aşağıdaki tabloyu her test turunda güncelle (yönetmelik madde 1.1 "test kan
 
 | Tarih | Senaryo | Sonuç | Not / Bulunan Hata | Düzeltme Sonrası Tekrar Test |
 |---|---|---|---|---|
+| 2026-08-13 | Senaryo 1 — İlk admin ile giriş | ✅ Başarılı | Backend'i ilk kez ayağa kaldırma sürecinde şu hatalarla karşılaşıldı ve düzeltildi: (1) Lombok, JDK 25 ile annotation processing yapamıyordu → Lombok 1.18.42'ye sabitlendi. (2) Spring Security 7'de `DaoAuthenticationProvider`'ın no-arg constructor'ı kaldırılmış → constructor'a `UserDetailsService` verildi. (3) `OncePerRequestFilter`'daki `@NonNull` annotation'ları Spring Framework 7 ile çakışıyordu → kaldırıldı. (4) `TaskItem` entity'sindeki `not` alanı PostgreSQL'in ayrılmış kelimesiyle çakışıp tablo oluşturmayı bozuyordu → sütun adı `notlar` olarak değiştirildi. (5) PostgreSQL kurulumu Türkçe Windows locale hatası verdi → kurulumda `C` locale seçilerek çözüldü. | Login `200 OK` döndü, `token`/`userId`/`rol: ADMIN` doğru geldi. Tekrar teste gerek kalmadı, ilk denemede başarılı. |
 | _(doldurulacak)_ | | | | |
 
 ## Bilinen Riskler / Kalan Test Eksikleri

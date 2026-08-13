@@ -33,8 +33,7 @@ docs/       Analiz dokümanı, test senaryoları, teknik karar notları
 
 ```bash
 cd backend
-cp .env.example .env   # değerleri kendi ortamına göre düzenle
-# PostgreSQL'de projedurum adında bir veritabanı oluştur
+cp .env.example .env
 mvn spring-boot:run
 ```
 

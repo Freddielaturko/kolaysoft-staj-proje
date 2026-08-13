@@ -41,6 +41,6 @@ public class TaskItem {
 
     private LocalDate tamamlananTarih;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "notlar", columnDefinition = "TEXT")
     private String not;
 }
