@@ -1,7 +1,9 @@
 .login-page {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  background: #FAFAF8;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
@@ -9,8 +11,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 4rem 5rem;
-  background: #FAFAF8;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
 }
 
 .login-brand {
@@ -50,7 +53,6 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  max-width: 380px;
 }
 
 .login-form label {
@@ -106,67 +108,4 @@
   border: 1px solid #FECACA;
   color: #B91C1C;
   font-size: 0.85rem;
-}
-
-.login-side {
-  background: #0F3D2E;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.login-side::before {
-  content: '';
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%);
-  top: -100px;
-  right: -100px;
-}
-
-.login-side-content {
-  position: relative;
-  max-width: 420px;
-  color: white;
-}
-
-.login-eyebrow {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #10B981;
-  margin-bottom: 1rem;
-}
-
-.login-side-content h2 {
-  font-size: 2.1rem;
-  line-height: 1.25;
-  margin: 0 0 1rem;
-  font-weight: 700;
-}
-
-.login-side-content p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #D1FAE5;
-  margin: 0;
-}
-
-@media (max-width: 900px) {
-  .login-page {
-    grid-template-columns: 1fr;
-  }
-  .login-side {
-    display: none;
-  }
-  .login-panel {
-    padding: 3rem 1.5rem;
-  }
 }

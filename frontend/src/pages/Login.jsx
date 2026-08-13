@@ -73,17 +73,6 @@ export default function Login() {
           </button>
         </form>
       </div>
-
-      <div className="login-side">
-        <div className="login-side-content">
-          <span className="login-eyebrow">Kolaysoft</span>
-          <h2>Her hafta, her proje,<br />tek ekranda.</h2>
-          <p>
-            Proje yöneticileri ilerlemeyi girer, CTO tüm portföyü
-            filtreleyerek anlık takip eder.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }
