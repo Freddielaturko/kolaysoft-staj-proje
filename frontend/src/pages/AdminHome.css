@@ -1,0 +1,142 @@
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.admin-card {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.admin-card h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
+  color: #0F3D2E;
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #F0F0EE;
+}
+
+.admin-form input,
+.admin-form select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.admin-form input:focus,
+.admin-form select:focus {
+  outline: none;
+  border-color: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.admin-form button {
+  grid-column: span 2;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: #0F3D2E;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-form button:hover:not(:disabled) {
+  background: #144d3a;
+}
+
+.admin-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-form-error {
+  grid-column: span 2;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #B91C1C;
+  font-size: 0.82rem;
+}
+
+.admin-form-hint {
+  grid-column: span 2;
+  font-size: 0.8rem;
+  color: #92400E;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.admin-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #F3F4F6;
+  color: #1F2937;
+}
+
+.admin-table-empty {
+  text-align: center;
+  color: #9CA3AF;
+  padding: 1.5rem;
+}
+
+.admin-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.admin-badge-admin { background: #FEE2E2; color: #991B1B; }
+.admin-badge-pm { background: #DBEAFE; color: #1E40AF; }
+.admin-badge-cto { background: #D1FAE5; color: #065F46; }
+
+.admin-badge-status-aktif { background: #D1FAE5; color: #065F46; }
+.admin-badge-status-beklemede { background: #FEF3C7; color: #92400E; }
+.admin-badge-status-tamamlandi { background: #E0E7FF; color: #3730A3; }
+.admin-badge-status-iptal { background: #F3F4F6; color: #6B7280; }
+
+.admin-error {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #B91C1C;
+  font-size: 0.9rem;
+}
