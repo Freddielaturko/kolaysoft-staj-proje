@@ -11,8 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
-// jjwt'nin Claims arayuzu null-annotation icermiyor; Eclipse'in fonksiyonel
-// arayuz null analizi bu yuzden zararsiz bir uyari veriyor, gercek bir null riski yok.
+
 @SuppressWarnings("null")
 @Service
 public class JwtService {
