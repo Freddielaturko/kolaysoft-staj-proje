@@ -8,9 +8,9 @@ ekrandan filtreleyerek takip edebiliyor.
 - Analiz dokümanı: [`docs/analiz-dokumani.md`](docs/analiz-dokumani.md)
 - Test senaryoları: [`docs/test-senaryolari.md`](docs/test-senaryolari.md)
 
-## Teknoloji Yığını
+## Kullanılan Teknolojiler
 
-- **Backend:** Java 17, Spring Boot 3, Spring Security (JWT), Spring Data JPA, PostgreSQL
+- **Backend:** Java 25, Spring Boot 4.1, Spring Security (JWT), Spring Data JPA, PostgreSQL
 - **Frontend:** React (Vite), React Router, Axios
 
 ## Proje Yapısı
@@ -33,7 +33,7 @@ docs/       Analiz dokümanı, test senaryoları, teknik karar notları
 
 ```bash
 cd backend
-cp .env.example .env
+cp .env.example .env  
 mvn spring-boot:run
 ```
 
@@ -74,12 +74,23 @@ Herkese açık kayıt yok; kullanıcıları yalnızca Admin oluşturur.
 
 Yetki kuralı: CTO yazma işlemi yapamaz, PM yalnızca sorumlusu olduğu projeye yazabilir.
 
+## Frontend
+
+Giriş sonrası kullanıcı rolüne göre otomatik yönlendirilir:
+
+- `/login` — herkese açık giriş ekranı
+- `/admin` — **Admin**: kullanıcı oluşturma (Admin/PM/CTO), proje oluşturma ve sorumlu PM ataması
+- `/pm` — **PM**: kendine atanmış proje(ler) arasında seçim, haftalık rapor formu (aynı hafta ikinci girişte otomatik günceller), geçmiş rapor tablosu, iş kalemi ekleme ve durum güncelleme
+- `/cto` — **CTO**: portföy özeti (yeşil/sarı/kırmızı proje sayaçları), proje/durum/risk filtreleri, renk kodlu proje kartları
+
+Yetkisiz bir role ait sayfaya erişim denendiğinde ana sayfaya yönlendirilir; token geçersiz/süresi dolmuşsa otomatik olarak `/login`'e döner.
+
 ## Durum
 
-Geliştirme aşamasında — MVP (1-20. gün planı) üzerinde çalışıyorum.
+Geliştirme aşamasında — MVP (1-20. gün planı) tamamlandı, doğrulandı.
 
 ## Bilinen Eksikler
 
-- Frontend sayfaları (login, dashboard'lar, formlar) henüz yok
-- Otomatik testler henüz yok, manuel test akışı `docs/test-senaryolari.md`'de
-- CTO dashboard'a ek metrikler (görev sayacı vb.) eklenebilir
+- Otomatik (JUnit, Cypress/Playwright) testler henüz yok; manuel test akışı ve sonuçları `docs/test-senaryolari.md`'de
+- CTO dashboard'a ek metrikler (görev sayacı, trend grafiği vb.) eklenebilir
+- PM'in birden fazla projesi olduğunda proje seçici şu an basit bir dropdown; daha zengin bir görünüm (sekme/liste) düşünülebilir
