@@ -7,8 +7,14 @@ ekrandan filtreleyerek takip edebiliyor.
 
 - Analiz dokümanı: [`docs/analiz-dokumani.md`](docs/analiz-dokumani.md)
 - Test senaryoları: [`docs/test-senaryolari.md`](docs/test-senaryolari.md)
+- Deployment: [`docs/deployment.md`](docs/deployment.md)
 
-## Kullanılan Teknolojiler
+## Canlı Adresler
+
+- **Uygulama:** https://kolaysoft-staj-proje.vercel.app
+- **Backend API:** https://kolaysoft-staj-proje.onrender.com/api
+
+## Teknoloji Yığını
 
 - **Backend:** Java 25, Spring Boot 4.1, Spring Security (JWT), Spring Data JPA, PostgreSQL
 - **Frontend:** React (Vite), React Router, Axios
@@ -33,7 +39,7 @@ docs/       Analiz dokümanı, test senaryoları, teknik karar notları
 
 ```bash
 cd backend
-cp .env.example .env  
+cp .env.example .env 
 mvn spring-boot:run
 ```
 
@@ -87,10 +93,9 @@ Yetkisiz bir role ait sayfaya erişim denendiğinde ana sayfaya yönlendirilir; 
 
 ## Durum
 
-Geliştirme aşamasında — MVP (1-20. gün planı) tamamlandı, doğrulandı.
+MVP tamamlandı — backend, frontend, testler ve deployment doğrulandı. Canlı ortamda çalışıyor.
 
-## Bilinen Eksikler
+## Eksikler
 
 - Otomatik (JUnit, Cypress/Playwright) testler henüz yok; manuel test akışı ve sonuçları `docs/test-senaryolari.md`'de
-- CTO dashboard'a ek metrikler (görev sayacı, trend grafiği vb.) eklenebilir
-- PM'in birden fazla projesi olduğunda proje seçici şu an basit bir dropdown; daha zengin bir görünüm (sekme/liste) düşünülebilir
+- Render'ın ücretsiz planı hareketsizlikte uykuya geçiyor, ücretsiz PostgreSQL 90 gün sonra siliniyor (bkz. `docs/deployment.md`)
