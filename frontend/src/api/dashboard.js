@@ -1,12 +1,11 @@
 import apiClient from './client'
 
-export async function getCtoDashboard(filters = {}) {
-  const params = {}
-  if (filters.projectId) params.projectId = filters.projectId
-  if (filters.raporHaftasi) params.raporHaftasi = filters.raporHaftasi
-  if (filters.genelDurum) params.genelDurum = filters.genelDurum
-  if (filters.riskSeviyesi) params.riskSeviyesi = filters.riskSeviyesi
+export async function getSummary() {
+  const { data } = await apiClient.get('/dashboard/summary')
+  return data
+}
 
-  const { data } = await apiClient.get('/dashboard/cto', { params })
+export async function listAlerts() {
+  const { data } = await apiClient.get('/alerts')
   return data
 }

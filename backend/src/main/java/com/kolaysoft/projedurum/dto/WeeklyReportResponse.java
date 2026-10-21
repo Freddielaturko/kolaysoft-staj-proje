@@ -7,6 +7,7 @@ import java.time.LocalDate;
 public record WeeklyReportResponse(
         Long id,
         Long projectId,
+        String projectKod,
         String projectAd,
         LocalDate raporHaftasi,
         Integer hedeflenenIlerleme,
@@ -18,12 +19,16 @@ public record WeeklyReportResponse(
         String yapilacaklar,
         String riskEngelNotu,
         String genelNot,
+        String butceDurumu,
+        String ekipDurumu,
+        Integer revizyon,
         String olusturanUserAdSoyad
 ) {
     public static WeeklyReportResponse from(WeeklyReport r) {
         return new WeeklyReportResponse(
                 r.getId(),
                 r.getProject().getId(),
+                ProjectCodes.of(r.getProject()),
                 r.getProject().getAd(),
                 r.getRaporHaftasi(),
                 r.getHedeflenenIlerleme(),
@@ -35,6 +40,9 @@ public record WeeklyReportResponse(
                 r.getYapilacaklar(),
                 r.getRiskEngelNotu(),
                 r.getGenelNot(),
+                r.getButceDurumu(),
+                r.getEkipDurumu(),
+                r.getRevizyon() == null ? 1 : r.getRevizyon(),
                 r.getOlusturanUser().getAdSoyad()
         );
     }

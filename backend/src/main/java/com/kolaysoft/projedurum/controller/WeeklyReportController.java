@@ -10,6 +10,7 @@ import com.kolaysoft.projedurum.repository.WeeklyReportRepository;
 import com.kolaysoft.projedurum.security.ProjectAccessGuard;
 import com.kolaysoft.projedurum.security.UserPrincipal;
 import com.kolaysoft.projedurum.service.ProjectLookupService;
+import com.kolaysoft.projedurum.service.ProjectInsightService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,7 @@ public class WeeklyReportController {
     private final WeeklyReportRepository weeklyReportRepository;
     private final ProjectLookupService projectLookupService;
     private final ProjectAccessGuard accessGuard;
+    private final ProjectInsightService insightService;
 
     // PM: kendi projesi icin haftalik rapor olusturur/gunceller (ayni proje+hafta -> upsert)
     @PostMapping("/api/projects/{projectId}/weekly-reports")
@@ -40,6 +42,12 @@ public class WeeklyReportController {
                 .findByProjectIdAndRaporHaftasi(projectId, request.raporHaftasi())
                 .orElseGet(WeeklyReport::new);
 
+        // Yeni rapor 1. revizyonla baslar, ayni hafta her guncellendiginde artar
+        int revizyon = report.getId() == null
+                ? 1
+                : (report.getRevizyon() == null ? 1 : report.getRevizyon()) + 1;
+        report.setRevizyon(revizyon);
+
         report.setProject(project);
         report.setRaporHaftasi(request.raporHaftasi());
         report.setHedeflenenIlerleme(request.hedeflenenIlerleme());
@@ -51,9 +59,24 @@ public class WeeklyReportController {
         report.setYapilacaklar(request.yapilacaklar());
         report.setRiskEngelNotu(request.riskEngelNotu());
         report.setGenelNot(request.genelNot());
+        report.setButceDurumu(request.butceDurumu());
+        report.setEkipDurumu(request.ekipDurumu());
         report.setOlusturanUser(principal.getUser());
 
         return WeeklyReportResponse.from(weeklyReportRepository.save(report));
+    }
+
+    // Rolun erisebildigi tum projelerin raporlari, en yeni hafta once
+    @GetMapping("/api/reports")
+    public List<WeeklyReportResponse> listAccessibleReports(@AuthenticationPrincipal UserPrincipal principal) {
+        List<Long> projectIds = insightService.accessibleProjects(principal).stream()
+                .map(Project::getId)
+                .toList();
+        if (projectIds.isEmpty()) {
+            return List.of();
+        }
+        return weeklyReportRepository.findByProjectIdInOrderByRaporHaftasiDesc(projectIds)
+                .stream().map(WeeklyReportResponse::from).toList();
     }
 
     // PM: kendi projesinin gecmis raporlari | CTO: herhangi bir projenin gecmis raporlari

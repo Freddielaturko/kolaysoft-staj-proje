@@ -1,5 +1,10 @@
 import apiClient from './client'
 
+export async function listAllReports() {
+  const { data } = await apiClient.get('/reports')
+  return data
+}
+
 export async function listWeeklyReports(projectId) {
   const { data } = await apiClient.get(`/projects/${projectId}/weekly-reports`)
   return data

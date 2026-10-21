@@ -68,34 +68,48 @@ Herkese açık kayıt yok; kullanıcıları yalnızca Admin oluşturur.
 - `GET /api/admin/users` — kullanıcı listesi (ADMIN).
 - Diğer tüm `/api/**` endpoint'leri geçerli bir JWT gerektirir.
 
+## Roller
+
+- **Admin:** kullanıcı ve proje oluşturur, projeye PM ve ekip lideri atar, tüm projeleri görür
+- **CTO:** tüm projeleri, raporları ve uyarıları görür; yazma işlemi yapamaz
+- **Proje Yöneticisi (PM):** sorumlusu olduğu projeleri görür, haftalık rapor ve iş kalemi girer
+- **Ekip Lideri:** lideri olduğu projeleri görür, haftalık rapor ve iş kalemi girer
+
 ## API Uç Noktaları
 
-- `POST /api/admin/projects` — proje oluşturma, sorumlu PM ataması (ADMIN)
-- `GET /api/projects` — PM kendi projelerini, CTO/Admin tüm projeleri görür
-- `GET /api/projects/{id}` — proje detayı (PM yalnızca kendi projesi)
-- `POST /api/projects/{id}/weekly-reports` — haftalık rapor oluşturma/güncelleme (PM; aynı proje+hafta güncelleme sayılır)
+- `POST /api/admin/projects`, `PUT /api/admin/projects/{id}` — proje oluşturma ve güncelleme (ADMIN)
+- `GET /api/projects` — rolün erişebildiği projeler; sağlık durumu, ilerleme, riskler ve rapor gecikmesi son rapordan hesaplanmış olarak döner
+- `GET /api/projects/{id}` — proje detayı
+- `POST /api/projects/{id}/weekly-reports` — haftalık rapor oluşturma/güncelleme (PM, Ekip Lideri). Aynı proje ve hafta için ikinci kayıt mevcut raporu günceller ve revizyon numarasını artırır
 - `GET /api/projects/{id}/weekly-reports` — projenin geçmiş raporları
-- `GET /api/dashboard/cto` — her projenin son durumu, `projectId` / `raporHaftasi` / `genelDurum` / `riskSeviyesi` ile filtrelenebilir (CTO)
-- `POST /api/projects/{id}/tasks`, `PUT .../tasks/{taskId}`, `GET .../tasks` — iş kalemi yönetimi (PM)
+- `GET /api/reports` — rolün erişebildiği tüm projelerin raporları
+- `GET /api/dashboard/summary` — KPI'lar ve son 12 haftanın portföy ilerleme trendi
+- `GET /api/alerts` — kırmızı/sarı raporlardan, yaklaşan veya geçen teslim tarihlerinden ve eksik raporlardan üretilen uyarılar
+- `GET /api/dashboard/cto` — her projenin son raporu, filtrelenebilir (CTO)
+- `POST /api/projects/{id}/tasks`, `PUT .../tasks/{taskId}`, `GET .../tasks` — iş kalemi yönetimi
 
-Yetki kuralı: CTO yazma işlemi yapamaz, PM yalnızca sorumlusu olduğu projeye yazabilir.
+Projenin sağlık durumunu ayrı bir kolonda tutmuyorum. Son haftalık raporun genel durumu, teslim tarihi ve rapor düzeni üzerinden her istekte hesaplanıyor. Böylece rapor girildiği anda dashboard da güncelleniyor:
+
+- **Kritik:** son rapor kırmızı ya da teslim tarihi geçmiş
+- **Dikkat:** son rapor sarı, geçen haftanın raporu eksik ya da teslime 14 günden az kalmışken ilerleme %80'in altında
+- **Arşiv:** arşivlenmiş veya iptal edilmiş proje
 
 ## Frontend
 
-Giriş sonrası kullanıcı rolüne göre otomatik yönlendirilir:
+- `/login` — giriş ekranı. `VITE_DEMO_MODE=true` iken demo rol butonları görünür
+- `/` — dashboard: KPI kartları, uyarı merkezi, haftalık ilerleme grafiği, proje tablosu
+- `/projeler` — filtrelenebilir proje listesi, Admin için proje ekleme
+- `/projeler/:id` — proje detayı: ilerleme, teslim ve bütçe özeti, haftalık rapor zaman çizelgesi, riskler, iş kalemleri
+- `/raporlar` — tüm haftalık raporlar, rapor girişi
+- `/kullanicilar` — kullanıcı yönetimi (Admin)
 
-- `/login` — herkese açık giriş ekranı
-- `/admin` — **Admin**: kullanıcı oluşturma (Admin/PM/CTO), proje oluşturma ve sorumlu PM ataması
-- `/pm` — **PM**: kendine atanmış proje(ler) arasında seçim, haftalık rapor formu (aynı hafta ikinci girişte otomatik günceller), geçmiş rapor tablosu, iş kalemi ekleme ve durum güncelleme
-- `/cto` — **CTO**: portföy özeti (yeşil/sarı/kırmızı proje sayaçları), proje/durum/risk filtreleri, renk kodlu proje kartları
+Token geçersiz veya süresi dolmuşsa otomatik olarak `/login`'e dönülür.
 
-Yetkisiz bir role ait sayfaya erişim denendiğinde ana sayfaya yönlendirilir; token geçersiz/süresi dolmuşsa otomatik olarak `/login`'e döner.
+## Demo Verisi
 
-## Durum
-
-MVP tamamlandı — backend, frontend, testler ve deployment doğrulandı. Canlı ortamda çalışıyor.
+`APP_DEMO_ENABLED=true` ile başlatıldığında, veritabanında hiç proje yoksa örnek kullanıcılar, altı proje ve geçmiş haftalık raporlar yüklenir. Tarihler uygulamanın başladığı güne göre hesaplandığı için demo ne zaman açılırsa açılsın gecikmeler ve teslim uyarıları gerçekçi görünür. Demo hesapları `cto@`, `pm@`, `pm2@`, `lead@`, `lead2@` ve `admin@kolaysoft.demo`, şifreleri `APP_DEMO_PASSWORD` (varsayılan `demo123`).
 
 ## Eksikler
 
 - Otomatik (JUnit, Cypress/Playwright) testler henüz yok; manuel test akışı ve sonuçları `docs/test-senaryolari.md`'de
-- Render'ın ücretsiz planı hareketsizlikte uykuya geçiyor, ücretsiz PostgreSQL 90 gün sonra siliniyor (bkz. `docs/deployment.md`)
+- Render'ın ücretsiz planı hareketsizlikte uykuya geçiyor (bkz. `docs/deployment.md`)

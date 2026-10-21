@@ -12,7 +12,7 @@ desteklemediği için bu ayrım gerekti).
 
 - **Frontend:** Vercel (React/Vite, Root Directory: `frontend`)
 - **Backend:** Render Web Service, Docker runtime (`backend/Dockerfile`)
-- **Veritabanı:** Render PostgreSQL (Free tier — not: ücretsiz veritabanı 90 gün sonra siliniyor)
+- **Veritabanı:** Neon PostgreSQL. İlk kurulumda Render PostgreSQL kullanıyordum, ücretsiz veritabanı 90 gün sonra silindiği için Neon'a taşıdım
 
 ## Ortam Değişkenleri
 
@@ -20,11 +20,13 @@ desteklemediği için bu ayrım gerekti).
 
 | Değişken | Açıklama |
 |---|---|
-| `DB_URL` | `jdbc:postgresql://<render-db-host>:5432/projedurum?sslmode=require` |
-| `DB_USERNAME`, `DB_PASSWORD` | Render PostgreSQL bağlantı bilgileri |
+| `DB_URL` | `jdbc:postgresql://<neon-host>/<db>?sslmode=require` (Neon panelindeki bağlantı bilgisinden, `postgresql://` yerine `jdbc:postgresql://` ile ve kullanıcı/şifre olmadan) |
+| `DB_USERNAME`, `DB_PASSWORD` | Neon rol bilgileri |
 | `JWT_SECRET` | En az 32 karakter, rastgele |
 | `JWT_EXPIRATION_MS` | `86400000` |
 | `APP_ADMIN_EMAIL`, `APP_ADMIN_PASSWORD`, `APP_ADMIN_AD_SOYAD` | İlk admin seed bilgileri |
+| `CORS_ALLOWED_ORIGINS` | `https://kolaysoft-staj-proje.vercel.app` |
+| `APP_DEMO_ENABLED`, `APP_DEMO_PASSWORD` | Canlı demoda örnek verinin yüklenmesi için `true` ve demo şifresi |
 
 
 **Vercel (frontend):**
@@ -32,6 +34,7 @@ desteklemediği için bu ayrım gerekti).
 | Değişken | Açıklama |
 |---|---|
 | `VITE_API_BASE_URL` | `https://kolaysoft-staj-proje.onrender.com/api` |
+| `VITE_DEMO_MODE`, `VITE_DEMO_PASSWORD` | Giriş ekranındaki demo rol butonları için `true` ve backend'deki demo şifresi |
 
 ## Deploy Sürecinde Karşılaşılan Hatalar ve Çözümleri
 
@@ -51,4 +54,4 @@ Canlı ortamda `POST /api/auth/login` ile admin girişi test edildi, JWT token b
 ## Sınırlamalar
 
 - Render'ın ücretsiz planı 15 dakika hareketsizlikte uykuya geçiyor
-- Ücretsiz PostgreSQL 90 gün sonra otomatik siliniyor
+- Hibernate enum kolonları için veritabanında CHECK kısıtı oluşturuyor ve `ddl-auto: update` bu kısıtı sonradan güncellemiyor. `LEAD` rolü ve `ARSIV` durumu eklendiği için eski bir veritabanında `users_rol_check` ve `projects_durum_check` kısıtlarının silinmesi gerekir. Neon'da sıfırdan kurulan veritabanında bu sorun yok

@@ -32,6 +32,8 @@ public record WeeklyReportRequest(
         String yapilanlar,
         String yapilacaklar,
         String riskEngelNotu,
-        String genelNot
+        String genelNot,
+        String butceDurumu,
+        String ekipDurumu
 ) {
 }
