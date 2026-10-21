@@ -51,7 +51,7 @@ public class DemoDataSeeder implements CommandLineRunner {
         }
 
         user("admin@kolaysoft.demo", "Sistem Admin", Role.ADMIN);
-        user("cto@kolaysoft.demo", "Ahmet Yılmaz", Role.CTO);
+        user("cto@kolaysoft.demo", "Salih Mert Anarol", Role.CTO);
         User zeynep = user("pm@kolaysoft.demo", "Zeynep Demir", Role.PM);
         User mert = user("pm2@kolaysoft.demo", "Mert Aydın", Role.PM);
         User ece = user("lead@kolaysoft.demo", "Ece Özkan", Role.LEAD);
