@@ -4,5 +4,6 @@ public enum ProjectStatus {
     AKTIF,
     BEKLEMEDE,
     TAMAMLANDI,
-    IPTAL
+    IPTAL,
+    ARSIV
 }

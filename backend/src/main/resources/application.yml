@@ -26,6 +26,11 @@ app:
     email: ${APP_ADMIN_EMAIL:admin@kolaysoft.com.tr}
     password: ${APP_ADMIN_PASSWORD:ChangeMe123!}
     ad-soyad: ${APP_ADMIN_AD_SOYAD:Sistem Admin}
+  # Acikken bos veritabanina ornek kullanici, proje ve rapor yukler (portfolyo demosu icin)
+  demo:
+    enabled: ${APP_DEMO_ENABLED:false}
+    password: ${APP_DEMO_PASSWORD:demo123}
+  zone: ${APP_ZONE:Europe/Istanbul}
 
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}

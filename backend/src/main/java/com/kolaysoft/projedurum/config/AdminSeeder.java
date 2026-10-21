@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 // Sistemde hic kullanici yoksa, .env / ortam degiskenlerinden okunan bilgilerle
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 // akisinin ilk adimi (tavuk-yumurta sorunu) cozulur.
 // Sadece users tablosu bossa calisir; sonraki ayaga kalkislarda tekrar olusturmaz.
 @Component
+@Order(1)
 @RequiredArgsConstructor
 @Slf4j
 public class AdminSeeder implements CommandLineRunner {

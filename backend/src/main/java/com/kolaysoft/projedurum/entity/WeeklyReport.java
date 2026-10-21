@@ -60,6 +60,14 @@ public class WeeklyReport {
     @Column(columnDefinition = "TEXT")
     private String genelNot;
 
+    // Kisa durum ozetleri, ornek: "Plan dahilinde", "%8 sapma riski"
+    private String butceDurumu;
+
+    private String ekipDurumu;
+
+    // Ayni hafta raporu her guncellendiginde bir artiyor; eski kayitlarda null olabilir
+    private Integer revizyon;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "olusturan_user_id", nullable = false)
     private User olusturanUser;

@@ -1,23 +1,26 @@
 package com.kolaysoft.projedurum.dto;
 
-import com.kolaysoft.projedurum.entity.Project;
+import java.time.LocalDate;
+import java.util.List;
 
 public record ProjectResponse(
         Long id,
+        String kod,
         String ad,
+        String aciklama,
         String musteri,
+        String departman,
+        Long butce,
+        LocalDate teslimTarihi,
         Long sorumluPmId,
         String sorumluPmAdSoyad,
-        String durum
+        Long ekipLideriId,
+        String ekipLideriAdSoyad,
+        String durum,
+        String saglik,
+        Integer ilerleme,
+        LocalDate sonRaporHaftasi,
+        boolean raporGecikti,
+        List<String> riskler
 ) {
-    public static ProjectResponse from(Project project) {
-        return new ProjectResponse(
-                project.getId(),
-                project.getAd(),
-                project.getMusteri(),
-                project.getSorumluPm().getId(),
-                project.getSorumluPm().getAdSoyad(),
-                project.getDurum().name()
-        );
-    }
 }

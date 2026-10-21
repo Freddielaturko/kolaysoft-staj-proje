@@ -1,53 +1,41 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import AppLayout from './components/AppLayout'
+import { PortfolioProvider } from './context/PortfolioContext'
 import Login from './pages/Login'
-import AdminHome from './pages/AdminHome'
-import PmHome from './pages/PmHome'
-import CtoHome from './pages/CtoHome'
-
-const ROLE_HOME = {
-  ADMIN: '/admin',
-  PM: '/pm',
-  CTO: '/cto',
-}
-
-function RootRedirect() {
-  const { user } = useAuth()
-  if (!user) return <Navigate to="/login" replace />
-  return <Navigate to={ROLE_HOME[user.rol] || '/login'} replace />
-}
+import Dashboard from './pages/Dashboard'
+import Projects from './pages/Projects'
+import ProjectDetail from './pages/ProjectDetail'
+import Reports from './pages/Reports'
+import Users from './pages/Users'
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<RootRedirect />} />
-
       <Route
-        path="/admin"
         element={
-          <ProtectedRoute allowedRoles={['ADMIN']}>
-            <AdminHome />
+          <ProtectedRoute>
+            <PortfolioProvider>
+              <AppLayout />
+            </PortfolioProvider>
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/pm"
-        element={
-          <ProtectedRoute allowedRoles={['PM']}>
-            <PmHome />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/cto"
-        element={
-          <ProtectedRoute allowedRoles={['CTO']}>
-            <CtoHome />
-          </ProtectedRoute>
-        }
-      />
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="projeler" element={<Projects />} />
+        <Route path="projeler/:id" element={<ProjectDetail />} />
+        <Route path="raporlar" element={<Reports />} />
+        <Route
+          path="kullanicilar"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }
