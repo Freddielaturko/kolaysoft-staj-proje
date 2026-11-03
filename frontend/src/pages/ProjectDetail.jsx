@@ -83,7 +83,7 @@ export default function ProjectDetail() {
         </div>
         <div className="detail-actions">
           <Badge tone={health.tone}>{health.label}</Badge>
-          {user.rol === 'ADMIN' && (
+          {(user.rol === 'ADMIN' || (user.rol === 'PM' && project.sorumluPmId === user.userId)) && (
             <button className="secondary-button" onClick={() => setModal({ type: 'project' })}><Pencil size={14} /> Düzenle</button>
           )}
           {writable && (

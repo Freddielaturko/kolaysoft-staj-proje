@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { createProject, updateProject } from '../api/projects'
-import { listUsers } from '../api/users'
+import { listAssignableUsers } from '../api/users'
+import { useAuth } from '../context/AuthContext'
 import { PROJECT_STATUS, errorMessage } from '../utils/format'
 
 export default function ProjectForm({ project, onSaved, onCancel }) {
+  const { user } = useAuth()
+  const isPm = user.rol === 'PM'
   const [users, setUsers] = useState([])
   const [form, setForm] = useState({
     kod: project?.kod ?? '',
@@ -21,7 +24,7 @@ export default function ProjectForm({ project, onSaved, onCancel }) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    listUsers().then(setUsers).catch(() => setError('Kullanıcı listesi yüklenemedi'))
+    listAssignableUsers().then(setUsers).catch(() => setError('Kullanıcı listesi yüklenemedi'))
   }, [])
 
   const pms = users.filter((u) => u.rol === 'PM')
@@ -36,7 +39,8 @@ export default function ProjectForm({ project, onSaved, onCancel }) {
       ...form,
       butce: form.butce === '' ? null : Number(form.butce),
       teslimTarihi: form.teslimTarihi || null,
-      sorumluPmId: form.sorumluPmId ? Number(form.sorumluPmId) : null,
+      // PM'in actigi projede sorumlu backend'de PM'in kendisi oluyor
+      sorumluPmId: isPm ? null : form.sorumluPmId ? Number(form.sorumluPmId) : null,
       ekipLideriId: form.ekipLideriId ? Number(form.ekipLideriId) : null,
     }
     try {
@@ -83,10 +87,14 @@ export default function ProjectForm({ project, onSaved, onCancel }) {
         </label>
         <label className="field">
           Proje yöneticisi
-          <select value={form.sorumluPmId} onChange={set('sorumluPmId')} required>
-            <option value="">Seçin</option>
-            {pms.map((u) => <option key={u.id} value={u.id}>{u.adSoyad}</option>)}
-          </select>
+          {isPm ? (
+            <input value={project?.sorumluPmAdSoyad ?? user.adSoyad} disabled />
+          ) : (
+            <select value={form.sorumluPmId} onChange={set('sorumluPmId')} required>
+              <option value="">Seçin</option>
+              {pms.map((u) => <option key={u.id} value={u.id}>{u.adSoyad}</option>)}
+            </select>
+          )}
         </label>
         <label className="field">
           Ekip lideri

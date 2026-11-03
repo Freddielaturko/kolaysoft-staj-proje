@@ -9,3 +9,9 @@ export async function createUser(payload) {
   const { data } = await apiClient.post('/admin/users', payload)
   return data
 }
+
+// Proje formundaki PM ve ekip lideri secimleri icin; Admin ve PM erisebilir
+export async function listAssignableUsers() {
+  const { data } = await apiClient.get('/users/assignable')
+  return data
+}

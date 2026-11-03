@@ -11,7 +11,8 @@ export default function Projects() {
   const { projects, loading, error, reload } = usePortfolio()
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
-  const formOpen = params.get('yeni') === '1' && user.rol === 'ADMIN'
+  const canCreate = user.rol === 'ADMIN' || user.rol === 'PM'
+  const formOpen = params.get('yeni') === '1' && canCreate
 
   if (loading) return <div className="loading">Projeler yükleniyor...</div>
 
@@ -21,7 +22,7 @@ export default function Projects() {
       <ProjectTable
         projects={projects}
         title="Tüm projeler"
-        action={user.rol === 'ADMIN' && (
+        action={canCreate && (
           <button className="primary-button" onClick={() => setParams({ yeni: '1' })}>
             <Plus size={16} /> Proje ekle
           </button>

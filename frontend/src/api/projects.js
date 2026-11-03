@@ -11,11 +11,11 @@ export async function getProject(id) {
 }
 
 export async function createProject(payload) {
-  const { data } = await apiClient.post('/admin/projects', payload)
+  const { data } = await apiClient.post('/projects', payload)
   return data
 }
 
 export async function updateProject(id, payload) {
-  const { data } = await apiClient.put(`/admin/projects/${id}`, payload)
+  const { data } = await apiClient.put(`/projects/${id}`, payload)
   return data
 }
