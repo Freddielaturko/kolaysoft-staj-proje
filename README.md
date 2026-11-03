@@ -112,4 +112,4 @@ Token geçersiz veya süresi dolmuşsa otomatik olarak `/login`'e dönülür.
 ## Eksikler
 
 - Otomatik (JUnit, Cypress/Playwright) testler henüz yok; manuel test akışı ve sonuçları `docs/test-senaryolari.md`'de
-- Render'ın ücretsiz planı hareketsizlikte uykuya geçiyor (bkz. `docs/deployment.md`)
+- Render'ın ücretsiz planı 15 dakika istek gelmezse backend'i uyutuyor. `.github/workflows/keep-alive.yml` 10 dakikada bir `/api/health`'e istek atarak bunu önlüyor. GitHub zamanlanmış işleri yoğunlukta birkaç dakika geciktirebildiği için nadiren yine uyuyabilir

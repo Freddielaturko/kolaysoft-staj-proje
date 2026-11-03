@@ -53,5 +53,5 @@ Canlı ortamda `POST /api/auth/login` ile admin girişi test edildi, JWT token b
 
 ## Sınırlamalar
 
-- Render'ın ücretsiz planı 15 dakika hareketsizlikte uykuya geçiyor
+- Render'ın ücretsiz planı 15 dakika hareketsizlikte uykuya geçiyor. Bunu önlemek için GitHub Actions'ta 10 dakikada bir `/api/health`'e istek atan bir iş var (`.github/workflows/keep-alive.yml`). Endpoint veritabanına dokunmuyor, Neon'un compute'u bu yüzden açık kalmıyor. Ücretsiz plan aylık 750 saat veriyor; tek servis ay boyunca açık kalsa da bu sınırın altında kalıyor
 - Hibernate enum kolonları için veritabanında CHECK kısıtı oluşturuyor ve `ddl-auto: update` bu kısıtı sonradan güncellemiyor. `LEAD` rolü ve `ARSIV` durumu eklendiği için eski bir veritabanında `users_rol_check` ve `projects_durum_check` kısıtlarının silinmesi gerekir. Neon'da sıfırdan kurulan veritabanında bu sorun yok
