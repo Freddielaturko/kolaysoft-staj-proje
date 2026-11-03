@@ -36,7 +36,14 @@ export default function Dashboard() {
   let action = null
   if (user.rol === 'ADMIN') {
     action = <button className="primary-button" onClick={() => navigate('/projeler?yeni=1')}><Plus size={17} /> Yeni proje</button>
-  } else if (user.rol === 'PM' || user.rol === 'LEAD') {
+  } else if (user.rol === 'PM') {
+    action = (
+      <div className="hero-actions">
+        <button className="secondary-button" onClick={() => navigate('/projeler?yeni=1')}><Plus size={16} /> Yeni proje</button>
+        <button className="primary-button" onClick={() => navigate('/raporlar?yeni=1')}><Plus size={17} /> Haftalık rapor gir</button>
+      </div>
+    )
+  } else if (user.rol === 'LEAD') {
     action = <button className="primary-button" onClick={() => navigate('/raporlar?yeni=1')}><Plus size={17} /> Haftalık rapor gir</button>
   }
 

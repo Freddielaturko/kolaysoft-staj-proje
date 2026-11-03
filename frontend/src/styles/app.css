@@ -211,6 +211,7 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .hero-row { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 26px; }
 .hero-row h2, .detail-head h2 { font: 600 34px var(--display); letter-spacing: -.02em; margin: 0 0 5px; }
 .hero-row h2 span { color: var(--blue); }
+.hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 19px; }
 .kpi { background: #fff; border: 1px solid var(--line); padding: 18px 19px; min-height: 126px; }
@@ -479,6 +480,8 @@ tbody tr.clickable:hover { background: #f8fbff; }
   .content { padding: 24px 14px; }
   .hero-row { display: block; }
   .hero-row .primary-button { margin-top: 18px; }
+  .hero-actions { margin-top: 18px; }
+  .hero-actions .primary-button { margin-top: 0; }
   .hero-row h2, .detail-head h2 { font-size: 29px; }
   .kpi-grid { gap: 8px; }
   .kpi { padding: 14px; min-height: 112px; }

@@ -26,7 +26,7 @@ public record ProjectRequest(
 
         LocalDate teslimTarihi,
 
-        @NotNull(message = "Sorumlu proje yoneticisi secilmelidir")
+        // Admin icin zorunlu; PM'in actigi projede yok sayiliyor, sorumlu her zaman PM'in kendisi
         Long sorumluPmId,
 
         Long ekipLideriId,
