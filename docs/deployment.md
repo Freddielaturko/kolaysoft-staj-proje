@@ -5,7 +5,7 @@ desteklemediği için bu ayrım gerekti).
 
 ## Canlı Adresler
 
-- **Frontend:** https://kolaysoft-staj-proje.vercel.app
+- **Frontend:** https://proje-durum-sistemi.vercel.app
 - **Backend API:** https://kolaysoft-staj-proje.onrender.com/api
 
 ## Altyapı
@@ -25,7 +25,7 @@ desteklemediği için bu ayrım gerekti).
 | `JWT_SECRET` | En az 32 karakter, rastgele |
 | `JWT_EXPIRATION_MS` | `86400000` |
 | `APP_ADMIN_EMAIL`, `APP_ADMIN_PASSWORD`, `APP_ADMIN_AD_SOYAD` | İlk admin seed bilgileri |
-| `CORS_ALLOWED_ORIGINS` | `https://kolaysoft-staj-proje.vercel.app` |
+| `CORS_ALLOWED_ORIGINS` | `https://proje-durum-sistemi.vercel.app,https://kolaysoft-staj-proje.vercel.app` (eski adres de açık kalsın diye ikisi birden) |
 | `APP_DEMO_ENABLED`, `APP_DEMO_PASSWORD` | Canlı demoda örnek verinin yüklenmesi için `true` ve demo şifresi |
 
 

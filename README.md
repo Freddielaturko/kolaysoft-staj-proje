@@ -11,7 +11,7 @@ ekrandan filtreleyerek takip edebiliyor.
 
 ## Canlı Adresler
 
-- **Uygulama:** https://kolaysoft-staj-proje.vercel.app
+- **Uygulama:** https://proje-durum-sistemi.vercel.app
 - **Backend API:** https://kolaysoft-staj-proje.onrender.com/api
 
 ## Teknoloji Yığını
